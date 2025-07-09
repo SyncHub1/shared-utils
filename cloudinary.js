@@ -94,6 +94,30 @@ class CloudinaryService {
     }
   }
 
+  async uploadPDF(filePath, options = {}) {
+    try {
+      const defaultOptions = {
+        folder: 'processed_pdfs',
+        resource_type: 'raw',
+        ...options
+      };
+      const result = await this.cloudinary.uploader.upload(filePath, defaultOptions);
+      return {
+        success: true,
+        url: result.secure_url,
+        public_id: result.public_id,
+        format: result.format,
+        bytes: result.bytes
+      };
+    } catch (error) {
+      console.error('❌ Cloudinary PDF upload failed:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
   async deleteFile(publicId, resourceType = 'image') {
     try {
       const result = await this.cloudinary.uploader.destroy(publicId, {
